@@ -1,17 +1,20 @@
 package org.rebelalliance.services.implementations;
 
 import java.util.*;
-
-import org.rebelalliance.constants.SatelliteNames;
+import org.rebelalliance.daos.SatelliteDAO;
 import org.rebelalliance.entities.LoadCarrier;
 import org.rebelalliance.entities.Satellite;
 import org.rebelalliance.exceptions.MessageNotObtainedException;
 import org.rebelalliance.exceptions.SatelliteNotFoundException;
 import org.rebelalliance.services.interfaces.ISatelliteService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class SatelliteService implements ISatelliteService {
+	
+	@Autowired
+	private SatelliteDAO satelliteDAO;
 
 	@Override
 	public float[] getLocation(float... distances) {
@@ -84,22 +87,17 @@ public class SatelliteService implements ISatelliteService {
 	}
 
 	@Override
-	public LoadCarrier getLoadCarrier(String name, Satellite satellite) throws SatelliteNotFoundException, MessageNotObtainedException {
+	public LoadCarrier getLoadCarrier() throws SatelliteNotFoundException, MessageNotObtainedException {
 		
-		Satellite kenobi = Satellite.createDefault(SatelliteNames.KENOBI);
-		Satellite skywalker = Satellite.createDefault(SatelliteNames.SKYWALKER);
-		Satellite sato = Satellite.createDefault(SatelliteNames.SATO);
-		Satellite[]satellites = {kenobi, skywalker, sato};
+	    List<Satellite> satellites = new ArrayList<Satellite>();
+		satelliteDAO.findAll().forEach(satellites::add);
 		
-		Optional<Satellite> selSat = Arrays.stream(satellites).filter(s -> s.getName().equalsIgnoreCase(name)).findFirst();
+		int satellitesSize = satellites.size();
+		if(satellitesSize < 3)
+			throw new SatelliteNotFoundException("There are not enough satellites to determine the position and discover the carrier's message.");
 		
-		if(!selSat.isPresent())
-			throw new SatelliteNotFoundException(name);
 		
-		selSat.get().distance = satellite.distance;
-		selSat.get().message = satellite.message;
-		
-		return getLoadCarrier(satellites);
+		return getLoadCarrier(satellites.subList(satellitesSize-3, satellitesSize).toArray(new Satellite[0]));
 	}
 	
 	@Override
@@ -120,5 +118,18 @@ public class SatelliteService implements ISatelliteService {
 		carrier.setPosition(location);
 		
 		return carrier;
+	}
+
+	@Override
+	public Satellite createOrUpdateSatellite(Satellite satellite) {
+		List<Satellite> satellites = satelliteDAO.findByName(satellite.getName());
+
+		Satellite satelliteToCreateOrUpdate = !satellites.isEmpty() ? satelliteToCreateOrUpdate = satellites.get(0)
+				: new Satellite(satellite.getName());
+		
+		satelliteToCreateOrUpdate.setDistance(satellite.distance);
+		satelliteToCreateOrUpdate.setMessage(satellite.message);
+
+		return satelliteDAO.save(satelliteToCreateOrUpdate);
 	}
 }

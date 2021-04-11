@@ -1,9 +1,21 @@
 package org.rebelalliance.entities;
 
-import org.rebelalliance.constants.SatelliteNames;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
+@Entity
+@Table(name="satellites")
 public class Satellite {
 
+	@Id
+	@Column(name="id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+	
 	public String name;
 	public float distance;
 	public String[] message;
@@ -31,26 +43,11 @@ public class Satellite {
 	public void setMessage(String[] message) {
 		this.message = message;
 	}
-
-	public static Satellite createDefault(String name) {
-		Satellite satellite = new Satellite();
-		satellite.name = name;
-		switch (name) {
-		case SatelliteNames.KENOBI:
-			satellite.distance = 100.0F;
-			satellite.message = new String[] { "este", "", "", "mensaje", "" };
-			break;
-		case SatelliteNames.SKYWALKER:
-			satellite.distance = 115.5F;
-			satellite.message = new String[] { "", "es", "", "", "secreto" };
-			break;
-		case SatelliteNames.SATO:
-			satellite.distance = 142.7F;
-			satellite.message = new String[] { "este", "", "un", "", "" };
-			break;
-		default:
-			break;
-		}
-		return satellite;
+	
+	public Satellite() {
+	}
+	
+	public Satellite(String name) {
+		this.name = name;
 	}
 }

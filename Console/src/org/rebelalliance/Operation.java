@@ -1,5 +1,6 @@
 package org.rebelalliance;
 
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Operation {
@@ -62,8 +63,13 @@ public class Operation {
 				skywalkerMess = getSatelliteMessage(SKYWALKER);
 				satoMess = getSatelliteMessage(SATO);
 				
-				String mess = getMessage(kenobiMess, skywalkerMess, satoMess);
-				System.out.printf("The secret message is: %s%n", mess);
+				try {
+					String mess = getMessage(kenobiMess, skywalkerMess, satoMess);
+					System.out.printf("The secret message is: %s%n", mess);
+				}catch(Exception e) {
+					System.out.println(e.getMessage());
+				}
+
 			default:
 				break;
 			}
@@ -155,7 +161,7 @@ public class Operation {
 		return message;
 	}
 
-	private static String getMessage(String[]... messages) {
+	private static String getMessage(String[]... messages) throws Exception {
 		String[] messArr = new String[getSize(messages)];
 
 		for (int i = 0; i < messArr.length; i++) {
@@ -165,6 +171,9 @@ public class Operation {
 					messArr[i] = arr[i + messageDelay];
 			}
 		}
+		
+		if(Arrays.stream(messArr).anyMatch(s -> s == null || s.isEmpty()))
+			throw new Exception("Secret message could not be obtained.");
 
 		return String.join(" ", messArr);
 	}

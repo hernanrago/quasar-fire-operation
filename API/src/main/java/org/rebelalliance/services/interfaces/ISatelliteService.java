@@ -10,7 +10,9 @@ public interface ISatelliteService {
 
 	String getMessage(String[]... messages) throws MessageNotObtainedException;
 	
-	LoadCarrier getLoadCarrier(String name, Satellite satellite) throws SatelliteNotFoundException, MessageNotObtainedException;
+	LoadCarrier getLoadCarrier() throws SatelliteNotFoundException, MessageNotObtainedException;
 	
 	LoadCarrier getLoadCarrier(Satellite[] satellites) throws MessageNotObtainedException;
+	
+	Satellite createOrUpdateSatellite(Satellite satellite);
 }
