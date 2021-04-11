@@ -31,9 +31,9 @@ Puede ingresarse a la interfaz de *Swagger* desde el siguiente link:
 
 Desde cualquier cliente externo la *URL* base es: https://quasar-fire-operation-test.herokuapp.com
 
-En la vista principal se presentan los dos *endpoints* disponibles.
+En la vista principal se presentan los tres *endpoints* disponibles.
 
-![Api01](https://i.imgur.com/Z7FcEfE.png)
+![Api01](https://i.imgur.com/0EdZzqt.png)
 
 Presionando el botón junto al *endpoint* se despliegan las características del mismo, entre ellas el modelo de datos requerido para el *request*.
 Este primero (**topsecret**) recibe un arreglo de satélites (con sus nombres, distancias y arreglos de palabras interceptadas) y devuelve las coordenadas del carguero y el mensaje descifrado.
@@ -48,19 +48,15 @@ En la sección *Server* response podemos podemos observar datos devueltos por el
 
 ![Api04](https://i.imgur.com/NZThYka.png)
 
-El segundo *endpoint* (**topsecret_split/{name}**) recibe la distancia y las palabras interceptadas de solo uno de los satélites y devuelve al igual que el primer *endpoint* las coordenadas y el mensaje secreto del carguero en caso de poder descifrarse.
+El segundo endpoint (**topsecret_split**) no requiere el envío de parametros. 
+
+![Imgur](https://i.imgur.com/q3CYjvR.png)
+
+En caso de haber como mínimo tres satélites ingresados y pueda descifrarse el mensaje secreto se retonarnará el mismo y las coordenadas del carguero.
+
+![Imgur](https://i.imgur.com/DDoWpNY.png)
+
+El tercer *endpoint* (**topsecret_split/{name}**) recibe en el cuerpo la distancia y las palabras interceptadas por un satélite y en el parámetro de la *URL* el nombre del mismo.
+Si ya existe un satélite con el nombre suministrado, se actualiza, caso contrario, se crea.
 
 ![Api05](https://i.imgur.com/qeaw3o6.png)
-
-Además de enviar la distancia y las palabras interceptadas debe enviarse el nombre del satélite por *URL*.
-Las opciones posibles son:
-- topsecret_split/kenobi
-- topsecret_split/skywalker
-- topsecret_split/sato
-En caso de enviar otro nombre el servidor informará que lo desconoce.
-
-![Api06](https://i.imgur.com/jsjl1AE.png)
-
-Respuesta del servidor:
-
-![Api06](https://i.imgur.com/Wr3IYsF.png)
